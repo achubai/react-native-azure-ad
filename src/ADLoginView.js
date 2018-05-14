@@ -165,7 +165,7 @@ export default class ADLoginView extends React.Component {
       this.setState({visible : !this.props.hideAfterLogin})
       this.props.onVisibilityChange && this.props.onVisibilityChange(false)
       this._getResourceAccessToken(code).catch((err) => {
-        log.error('ADLoginView._getResourceAccessToken', err)
+        log.error(`ADLoginView._getResourceAccessToken ${err}`)
       })
       return true
     }
@@ -244,7 +244,11 @@ export default class ADLoginView extends React.Component {
       this._lock = false
 
     }).catch((err) => {
-      throw new Error('Failed to acquire token for resources', err.stack)
+      const error = `Failed to acquire token for resources: ${err.resource}
+      ${(err.response) ? `${err.response.error}`: ''}
+      ${(err.response) ? `${err.response.error_description}`: ''}`;
+
+      throw new Error(error, err.stack)
     })
   }
 
